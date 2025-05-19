@@ -14,8 +14,7 @@ COWRYWISE ASSESSMENT
 
 ### Challenges:
 - This question gave me a bit of a tough time at first. I had to make sure I was picking only the customers who truly met all three conditions: they needed to have at least one funded savings plan, one funded investment plan, and at least one regular savings plan. Missing even one of these would have changed the results completely, so I had to pay close attention to how I filtered the data.
-- Another thing I had to be careful with was the way I joined the tables and did my aggregations. It’s very easy to mistakenly double-count deposits or misrepresent the total if the joins aren’t done properly. I had to go over the logic more than once to be sure everything was counting correctly.
-- Then shortly before submitting, I remembered to convert all the amount values from kobo to naira. That would have been a big miss. I also took some extra time to clean up the query so that it was readable, clear, and efficient.
+- Another thing I had to be careful with was the way I joined the tables and did my aggregations. It’s very easy to mistakenly double-count deposits or misrepresent the total if the joins aren’t done properly. Then shortly before submitting, I remembered to convert all the amount values from kobo to naira. That would have been a big miss.
 
 
 
@@ -29,16 +28,14 @@ COWRYWISE ASSESSMENT
 i) High Frequency for those averaging 10 or more transactions per month
 ii) Medium Frequency for those between 3 and 9
 iii) Low Frequency for those with less than 3 per month
-- Finally, I grouped everything by frequency category, counted how many customers fell into each group, and also calculated the average transactions per month per category for deeper insights. This way, the finance team can clearly see the breakdown of user engagement across the platform.
+- Finally, I grouped everything by frequency category, counted how many customers fell into each group, and also calculated the average transactions per month per category. This way, the finance team can clearly see the breakdown of user engagement across the platform.
 
 
 ### Challenges:
 - For the active month calculation, I wanted to be sure I was getting it right, so I calculated both the year and month differences, then added 1 to capture the starting month. That way, even if the first and last transactions were in the same month, it wouldn’t show as zero.
 - I also made sure to avoid any runtime errors by wrapping the division in NULLIF(active_months, 0). It’s a small thing, but easy to forget when you’re deep in the logic.
 - When it came to ordering the frequency categories (High, Medium, and Low) I used a CASE statement in the ORDER BY clause. I avoided MySQL-specific functions like FIELD() just to keep the query more portable and easier for anyone else to understand, no matter the SQL flavor they’re used to.
-- Then for the high-value customers question, I had to really pay attention to the filtering. It wasn’t just about who had deposits, I had to check for customers who had both funded savings and investment plans, plus at least one regular savings plan. Missing one of those would’ve made the result invalid.
-- Another thing I had to be extra careful with was avoiding double-counting when joining and aggregating data. It’s easy to mess up totals when joins start duplicating rows.
-- At the last minute I remembered that all the amounts were in kobo. So I went back, made sure I converted everything to naira, and also cleaned up the query for readability and performance.
+- I had to be extra careful with avoiding double-counting when joining and aggregating data. It’s easy to mess up totals when joins start duplicating rows.
 
 
 
