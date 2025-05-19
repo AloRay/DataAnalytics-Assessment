@@ -2,7 +2,7 @@
 COWRYWISE ASSESSMENT
 
 
-### Question 1: Customers with Funded Savings and Investment Plans
+## Question 1: Customers with Funded Savings and Investment Plans
 
 ### Approach:
 - I began by identifying users who had deposited into their savings accounts (`confirmed_amount > 0`), which I grouped and aggregated by `owner_id` to get both `savings_count` and total `confirmed_amount` (later converted from kobo to naira).
@@ -43,7 +43,7 @@ iii) Low Frequency for those with less than 3 per month
 
 
 
-### Question 3: Account Inactivity Alert
+## Question 3: Account Inactivity Alert
 
 ### Approach:
 - Defined active accounts as:
@@ -65,7 +65,7 @@ iii) Low Frequency for those with less than 3 per month
 
 
 
-### Q4: Customer Lifetime Value (CLV) Estimation
+## Q4: Customer Lifetime Value (CLV) Estimation
 
 ### Approach:
 - I joined the `users_customuser` and `savings_savingsaccount` tables on the `owner_id` foreign key.
