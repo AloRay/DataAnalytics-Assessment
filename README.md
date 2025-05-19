@@ -13,9 +13,11 @@ COWRYWISE ASSESSMENT
 
 
 ### Challenges:
-- I had to be careful to correctly filter customers to meet all three conditions: funded savings, funded investment, and at least one regular savings plan.
-- I was conscious to avoid double-counting or misrepresenting deposit values due to joins or aggregation logic.
-- I almost submitted then I remembered to correctly convert currency and keep the query as readable and as efficient as possible.
+- This question gave me a bit of a tough time at first. I had to make sure I was picking only the customers who truly met *all three* conditions: they needed to have at least one funded savings plan, one funded investment plan, and at least one regular savings plan. Missing even one of these would have changed the results completely, so I had to pay close attention to how I filtered the data.
+
+- Another thing I had to be careful with was the way I joined the tables and did my aggregations. It’s very easy to mistakenly double-count deposits or misrepresent the total if the joins aren’t done properly. I had to go over the logic more than once to be sure everything was counting correctly.
+
+- Then shortly before submitting, I remembered to convert all the amount values from kobo to naira. That would have been a big miss if I didn’t fix it. I also took some extra time to clean up the query so that it was readable, clear, and efficient.
 
 
 
@@ -36,9 +38,17 @@ iii) Low Frequency for those with less than 3 per month
 
 
 ### Challenges:
-- For the aActive month calculation, I guaranteed accuracy by calculating both year and month differences and adding 1 to include the start month.
-- To avoid runtime errors, I used `NULLIF(active_months, 0)`
-- In ordering categories, I used a `CASE` statement in `ORDER BY` to control the category display order without relying on MySQL-specific functions like `FIELD()` for portability and clarity.
+- For the active month calculation, I wanted to be sure I was getting it right, so I calculated both the year and month differences, then added 1 to capture the starting month. That way, even if the first and last transactions were in the same month, it wouldn’t show as zero.
+
+- I also made sure to avoid any runtime errors by wrapping the division in NULLIF(active_months, 0). It’s a small thing, but easy to forget when you’re deep in the logic.
+
+- When it came to ordering the frequency categories (High, Medium, and Low) I used a CASE statement in the ORDER BY clause. I avoided MySQL-specific functions like FIELD() just to keep the query more portable and easier for anyone else to understand, no matter the SQL flavor they’re used to.
+
+- Then for the high-value customers question, I had to really pay attention to the filtering. It wasn’t just about who had deposits, I had to check for customers who had both funded savings and investment plans, plus at least one regular savings plan. Missing one of those would’ve made the result invalid.
+
+- Another thing I had to be extra careful with was avoiding double-counting when joining and aggregating data. It’s easy to mess up totals when joins start duplicating rows.
+
+- At the last minute I remembered that all the amounts were in kobo. So I went back, made sure I converted everything to naira, and also cleaned up the query for readability and performance.
 
 
 
@@ -59,8 +69,8 @@ iii) Low Frequency for those with less than 3 per month
 
 
 #### Challenges:
-- I initially used and inner join but realized I needed only those with transactions so I opted for a "LEFT JOIN' and `HAVING last_transaction_date IS NULL`.
-- I filtered out inactive plans from the base table before aggregation to avoid false positives and to produce correct results.
+- I initially used and inner join but realized I needed only those with transactions so I switched to a 'LEFT JOIN' instead and used a 'HAVING last_transaction_date IS NULL' to isolate the truly inactive ones.
+- Another thing I had to be careful about was filtering out inactive plans from the base table before running any aggregation. If I didn’t do that early, I would’ve ended up including plans that shouldn’t count at all, which would have messed up the results. Making that adjustment upfront saved me from a lot of back and forth.
 
 
 
@@ -78,5 +88,5 @@ iii) Low Frequency for those with less than 3 per month
 
 
 ###Challenges:
-- I had to prevent division by zero in cases where a user’s tenure was 0 months. I handled this using `NULLIF(...)` in the denominator.
-- Correct average transaction value in naira required precise conversion from kobo and accurate grouping.
+-One challenge I ran into was making sure I avoided division by zero, especially for customers whose account tenure came out as 0 months. That would’ve caused errors in the query, so I used NULLIF(...) in the denominator to safely handle those cases.
+- Also, calculating the average transaction value in naira needed extra care. Since the raw amounts were in kobo, I had to make sure the conversion was done properly. And because I was grouping by customer, I had to double-check that the totals and averages were accurate and not being affected by the joins or groupings.
