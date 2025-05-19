@@ -78,5 +78,5 @@ iii) Low Frequency for those with less than 3 per month
 
 
 ###Challenges:
--One challenge I ran into was making sure I avoided division by zero, especially for customers whose account tenure came out as 0 months. That would’ve caused errors in the query, so I used NULLIF(...) in the denominator to safely handle those cases.
+- One challenge I ran into was making sure I avoided division by zero, especially for customers whose account tenure came out as 0 months. That would’ve caused errors in the query, so I used NULLIF(...) in the denominator to safely handle those cases.
 - Also, calculating the average transaction value in naira needed extra care. Since the raw amounts were in kobo, I had to make sure the conversion was done properly. And because I was grouping by customer, I had to double-check that the totals and averages were accurate and not being affected by the joins or groupings.
