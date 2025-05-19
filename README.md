@@ -7,15 +7,15 @@ COWRYWISE ASSESSMENT
 ### Approach:
 - I began by identifying users who had deposited into their savings accounts (`confirmed_amount > 0`), which I grouped and aggregated by `owner_id` to get both `savings_count` and total `confirmed_amount` (later converted from kobo to naira).
 - Then, I extracted users who had at least one investment plan (`is_a_fund = 1`) and counted them by `owner_id`.
-- I used an inner join to ensure only users who had both funded savings and investment plans were selected.
+- I used an inner join so that only users who had both funded savings and investment plans were selected.
 - A `WHERE EXISTS` condition was added to make sure the customer has **at least one regular savings plan** (`is_regular_savings = 1`) in the `plans_plan` table.
 - Results are sorted in descending order by the total deposit amount (converted to naira with two decimal places).
 
 
 ### Challenges:
-- Ensuring correct filtering of customers to meet all three conditions: funded savings, funded investment, and at least one regular savings plan.
-- Avoiding double-counting or misrepresenting deposit values due to joins or aggregation logic.
-- Managing currency conversion correctly and keeping the query readable and efficient.
+- I had to be careful to correctly filter customers to meet all three conditions: funded savings, funded investment, and at least one regular savings plan.
+- I was conscious to avoid double-counting or misrepresenting deposit values due to joins or aggregation logic.
+- I almost submitted then I remembered to correctly convert currency and keep the query as readable and as efficient as possible.
 
 
 
@@ -23,30 +23,22 @@ COWRYWISE ASSESSMENT
 ## Question 2: Transaction Frequency Analysis
 
 ### Approach:
-1. Data Aggregation:
-   - Count total transactions (`COUNT(*)`) per customer using the `savings_savingsaccount` table.
-   - Determine how long each customer has been active by calculating the number of months between their earliest and latest transaction.
+- For this analysis, I started by aggregating the transaction data. I pulled all the records from the savings_savingsaccount table and counted the total number of transactions per customer. To understand how long each customer has been active, I looked at the difference between their first and last transaction dates and converted that into months and that gave me their activity period.
 
-2. Average Transaction Calculation:
-   - Divide total transactions by active months to get the average number of transactions per month.
-   - Handle possible division by zero using `NULLIF`.
+- Next, I calculated the average number of transactions per month for each customer. I was careful to handle any potential division by zero by using NULLIF just in case someone had only one transaction or the same date for both first and last transactions.
 
-3. Categorization Logic:
-   - Customers are grouped into:
-     - High Frequency: ≥ 10 transactions/month
-     - Medium Frequency: 3–9 transactions/month
-     - Low Frequency: < 3 transactions/month
+- Once I had the average, I categorized the customers into three frequency bands:
+i) High Frequency for those averaging 10 or more transactions per month
+ii) Medium Frequency for those between 3 and 9
+iii) Low Frequency for those with less than 3 per month
 
-4. Result Aggregation:
-   - Group results by frequency category.
-   - Count customers in each category.
-   - Compute the average monthly transactions per category for insight.
+- Finally, I grouped everything by frequency category, counted how many customers fell into each group, and also calculated the average transactions per month per category for deeper insights. This way, the finance team can clearly see the breakdown of user engagement across the platform.
 
 
 ### Challenges:
-- Active Month Calculation: Ensured accuracy by calculating both year and month differences and adding 1 to include the start month.
-- Division by Zero: Used `NULLIF(active_months, 0)` to avoid runtime errors.
-- Ordering Categories: Used a `CASE` statement in `ORDER BY` to control the category display order without relying on MySQL-specific functions like `FIELD()` for portability and clarity.
+- For the aActive month calculation, I guaranteed accuracy by calculating both year and month differences and adding 1 to include the start month.
+- To avoid runtime errors, I used `NULLIF(active_months, 0)`
+- In ordering categories, I used a `CASE` statement in `ORDER BY` to control the category display order without relying on MySQL-specific functions like `FIELD()` for portability and clarity.
 
 
 
@@ -57,7 +49,7 @@ COWRYWISE ASSESSMENT
 - Defined active accounts as:
   - `is_regular_savings = 1` for Savings plans
   - `is_a_fund = 1` for Investment plans
-- Used a `LEFT JOIN` between `plans_plan` and `savings_savingsaccount` to include:
+- I used a `LEFT JOIN` between `plans_plan` and `savings_savingsaccount` to include:
   - Plans with no transactions at all (to catch those truly inactive)
 - Applied `MAX(transaction_date)` to find the most recent inflow
 - Used `DATEDIFF(CURRENT_DATE, last_transaction_date)` to calculate days since the last inflow
@@ -67,8 +59,8 @@ COWRYWISE ASSESSMENT
 
 
 #### Challenges:
-- No transactions scenario: Ensuring that plans with no transactions still appear in the result. This was handled with a `LEFT JOIN` and `HAVING last_transaction_date IS NULL`.
-- Avoiding false positives: Filtering out inactive plans from the base table before aggregation ensured correct results.
+- I initially used and inner join but realized I needed only those with transactions so I opted for a "LEFT JOIN' and `HAVING last_transaction_date IS NULL`.
+- I filtered out inactive plans from the base table before aggregation to avoid false positives and to produce correct results.
 
 
 
@@ -87,4 +79,4 @@ COWRYWISE ASSESSMENT
 
 ###Challenges:
 - I had to prevent division by zero in cases where a user’s tenure was 0 months. I handled this using `NULLIF(...)` in the denominator.
-- Ensuring correct average transaction value in naira required precise conversion from kobo and accurate grouping.
+- Correct average transaction value in naira required precise conversion from kobo and accurate grouping.
